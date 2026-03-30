@@ -124,6 +124,8 @@ Invoke-RestMethod `
   -Headers $headers `
   -Body $body
 
+---
+
 ## 🧠 設計意図
 JWT認証によりユーザーごとに問い合わせを分離
 Generic Views を使用し、保守性の高い構成に

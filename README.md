@@ -57,3 +57,20 @@ $response = Invoke-RestMethod `
   -Body $body
 
 $token = $response.access
+
+## API例
+
+GET 一覧
+http://127.0.0.1:8000/api/inquiries/
+
+POST 作成
+http://127.0.0.1:8000/api/inquiries/
+
+GET 詳細
+http://127.0.0.1:8000/api/inquiries/1/
+
+## 設計意図
+
+- JWT認証でユーザーごとにデータ分離
+- ステータス・優先度で業務管理を想定
+- RESTful設計を意識

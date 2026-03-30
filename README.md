@@ -1,26 +1,39 @@
 # Django Inquiry API
 
-## 概要
-問い合わせ管理APIです。
-JWT認証付きでユーザーごとにデータを管理できます。
+問い合わせ管理を行うためのREST APIです。  
+JWT認証・CRUD・フィルタ機能を備えた実務想定のAPIとして構築しています。
 
 ---
 
-## 技術スタック
+## 🚀 概要
+
+本APIは、ユーザーごとに問い合わせ（Inquiry）を管理するシステムです。
+
+- JWT認証によるユーザー管理
+- 問い合わせのCRUD操作
+- ステータス・優先度による絞り込み
+- Django REST Framework の Generic Views を使用
+
+---
+
+## 🛠 技術スタック
+
 - Python
 - Django
 - Django REST Framework
-- JWT認証（SimpleJWT）
+- Simple JWT
+- SQLite（開発環境）
 
 ---
 
-## 機能一覧
+## 🔐 認証
 
-### 認証
+### トークン取得
 - POST /api/token/
-- JWT認証
 
-### 問い合わせAPI
+---
+
+## 📡 API一覧
 
 | メソッド | URL |
 |--------|-----|
@@ -32,19 +45,33 @@ JWT認証付きでユーザーごとにデータを管理できます。
 
 ---
 
-## フィルタ機能
+## 🔎 フィルタ機能
 
-### ステータス
+### ステータスで絞り込み
 
-### 優先度
+
+GET /api/inquiries/?status=OPEN
+
+
+### 優先度で絞り込み
+
+
+GET /api/inquiries/?priority=HIGH
+
 
 ---
 
-## 動作確認（Windows PowerShell）
+## 💻 セットアップ（Windows）
 
-### トークン取得
+```cmd
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
 
-```powershell
+▶ 動作確認（PowerShell）
+トークン取得
 $body = @{
     username = "xilong"
     password = "xilong"
@@ -58,19 +85,47 @@ $response = Invoke-RestMethod `
 
 $token = $response.access
 
-## API例
+ヘッダー設定
+$headers = @{
+    Authorization = "Bearer $token"
+    "Content-Type" = "application/json"
+}
 
-GET 一覧
-http://127.0.0.1:8000/api/inquiries/
+一覧取得
+Invoke-RestMethod `
+  -Uri "http://127.0.0.1:8000/api/inquiries/" `
+  -Headers $headers
 
-POST 作成
-http://127.0.0.1:8000/api/inquiries/
+作成
+$body = @{
+    title = "ログインできない"
+    content = "管理画面にログインできません"
+    status = "OPEN"
+    priority = "HIGH"
+} | ConvertTo-Json
 
-GET 詳細
-http://127.0.0.1:8000/api/inquiries/1/
+Invoke-RestMethod `
+  -Uri "http://127.0.0.1:8000/api/inquiries/" `
+  -Method Post `
+  -Headers $headers `
+  -Body $body
 
-## 設計意図
+更新
+$body = @{
+    title = "ログインできない（更新）"
+    content = "パスワード再設定も失敗します"
+    status = "IN_PROGRESS"
+    priority = "HIGH"
+} | ConvertTo-Json
 
-- JWT認証でユーザーごとにデータ分離
-- ステータス・優先度で業務管理を想定
-- RESTful設計を意識
+Invoke-RestMethod `
+  -Uri "http://127.0.0.1:8000/api/inquiries/1/" `
+  -Method Put `
+  -Headers $headers `
+  -Body $body
+
+## 🧠 設計意図
+JWT認証によりユーザーごとに問い合わせを分離
+Generic Views を使用し、保守性の高い構成に
+ステータス・優先度で業務管理を想定
+RESTful設計を意識

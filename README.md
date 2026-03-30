@@ -10,6 +10,7 @@ Django
 Django REST Framework
 Simple JWT（JWT認証）
 SQLite（開発環境）
+
 🔐 認証
 トークン取得
 
@@ -22,6 +23,7 @@ POST	/api/inquiries/
 GET	/api/inquiries/{id}/
 PUT	/api/inquiries/{id}/
 DELETE	/api/inquiries/{id}/
+
 🔍 フィルタ機能
 ステータスで絞り込み
 
